@@ -1,75 +1,72 @@
 
 
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:uidb/src/constants/image_strings.dart';
 import 'package:uidb/src/constants/sizes.dart';
 import 'package:uidb/src/constants/text_strings.dart';
+import 'package:uidb/src/features/authentication/model/user_model.dart';
 import 'package:uidb/src/features/authentication/screens/profile_screen/profile_screen.dart';
+
+import '../../controllers/profile_controller.dart';
 
 class UpdateProfileScreen extends StatelessWidget {
   const UpdateProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ProfileController());
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => Get.to(() => ProfileScreen())
+        leading: IconButton(onPressed: () => Get.to(() => const ProfileScreen())
         , icon: const Icon(LineAwesomeIcons.angle_left),),
         title: Text(bpdEditProfile, style: Theme.of(context).textTheme.headlineMedium,),
       ),
       body: SingleChildScrollView(
        child:Container(
          padding: const EdgeInsets.all(bpdDefaultSize),
-         child: Column(
-           children: [
-             Stack(
-               children: [
-                 SizedBox(
-                   width: 120,
-                   height: 120,
-                   child: ClipRRect(
-                     borderRadius: BorderRadius.circular(100), child: const Image(image:AssetImage(bpdWelcomeImage)),
-                   ),
-                 )
-               ],
-             ),
-             const SizedBox(height: 50),
-             Form(child:
-             Column(
-               children: [
-                 TextFormField(
-                   decoration: const InputDecoration(label: Text(bpdFullName), prefixIcon: Icon(Icons.person)),
-                   ),
-                 const SizedBox(height: bpdFormHeight - 20),
-                  TextFormField(
-                    decoration:const InputDecoration(label: Text(bpdEmail), prefixIcon: Icon(Icons.email)),
-                  ),
-                 const SizedBox(height: bpdFormHeight - 20),
-                 IntlPhoneField(
-                     decoration: const InputDecoration(label: Text('Phone Number')),
+         child: FutureBuilder(
+           future: controller.getAllUser(),
+           builder: (context, snapshot) {
+             if(snapshot.connectionState == ConnectionState.done) {
+               if(snapshot.hasData){
+                 UserModel userData = snapshot.data as UserModel;
+                 return ListView.builder(
+                   shrinkWrap: true,
+                   itemCount: snapshot.data!.length,
+                   itemBuilder: (c, index) {
+                      return Column(
+                      children: [
+                        ListTile(
+                      iconColor: Colors.blue,
+                      tileColor: Colors.blue.withOpacity(0.1),
+                      leading: const Icon(LineAwesomeIcons.user_1),
+                      title: Text("Name: ${snapshot.data![index].fullName}"),
+                      subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(snapshot.data![index].phoneNo),
+                        Text(snapshot.data![index].email),
+                 ],
                  ),
-                     const SizedBox(height: bpdFormHeight - 20),
-                   TextFormField(
-                     decoration:const InputDecoration(label: Text(bpdPassword), prefixIcon: Icon(Icons.password)),
-                   ),
-                 const SizedBox(height: bpdFormHeight),
-                 SizedBox(
-                     width: 200,
-                     child: ElevatedButton(
-                       onPressed: () => Get.to (() => const UpdateProfileScreen()),
-                       child: const Text(bpdEditProfile),
-                     )
-                 )
-               ],
-             )
-             ),
-           ],
+                      ),
+                        const SizedBox(height: 10,)
+                      ],
+                      );
+                 }
+                 );
+               } else if (snapshot.hasError){
+                 return Center (child: Text(snapshot.error.toString()),);
+               } else {
+                 return const Center (child: Text('something went wrong'),);
+               }
+             } else {
+                 return const Center (child: CircularProgressIndicator());
+             }
+
+           },
+
          ),
        ),
     )
