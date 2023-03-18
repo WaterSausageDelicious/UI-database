@@ -52,3 +52,21 @@ const String bpdAlreadyHaveAnAccount = "Already have an account ? ";
 const String bpdNotHaveAnAccount = "Don't have an account ? ";
 const String bpdForgetPassword = 'Forget Password?';
 const String bpdLogout = "Click here to Logout";
+
+const String bpdProfile = "Profile";
+const String bpdEditProfile = "Edit Profile";
+const String bpdLogoutDialogHeading = "Logout";
+const String bpdProfileHeading = "Three Stooges";
+const String bpdProfileSubHeading = "smartarses@gmail.com";
+
+const String bpdMenu5 = bpdLogout;
+const String bpdMenu1 = "Setting";
+const String bpdMenu4 = "Information";
+const String bpdMenu2 = "Billing Details";
+const String bpdMenu3 = "User Management";
+
+const String bpdDelete = "Delete";
+const String bpdJoined = "Joined";
+const String bpdJoinedAt = "21 Dec 2021";
+
+
